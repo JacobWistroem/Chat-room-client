@@ -1,56 +1,51 @@
-import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
+import React, { useContext, useState } from 'react';
+import socketContext from './app/socketContext';
+import Chat from './features/chat/chat';
+import Menu from './features/menu/menu';
 import './App.css';
+import StandardDialog from './features/components/standardDialog';
 
 function App() {
+  const socket = useContext(socketContext);
+  const [page, setPage] = useState(0);
+  const [userID, setUserID] = useState("");
+  const [username, setUsername] = useState("");
+  const [openUser, setUserOpen] = useState((userID === ''));
+  const handleModalUserClose = () => setUserOpen(false);
+
+  const getUser = (usernameInput: string) => {
+    console.log(usernameInput)
+    socket.emit('getUser', usernameInput, (userID: any) => {
+      if (userID) {
+        setUserID(userID._id);
+        setUsername(userID.name);
+        setUserOpen(false);
+      }
+    });
+  };
+
+  /* useEffect(() => {
+    socket.on('setUserID', (userID) => setUserID(userID));
+    return () => {
+      socket.off('setUserID');
+    }
+  }, []); */
+
+  console.log(userID);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
+      <StandardDialog
+        open={openUser}
+        title="Set user"
+        description="Insert your username to start chatting"
+        confirmEvent={getUser}
+        cancelEvent={handleModalUserClose}
+      />
+      {((page === 0 && userID !== "") && (<Menu pageHandler={setPage} userID={userID} username={username} />))}
+      {((page === 1 && userID !== "") && (<Chat pageHandler={setPage} userID={userID} username={username} />))}
+
+
     </div>
   );
 }

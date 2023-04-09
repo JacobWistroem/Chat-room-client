@@ -1,6 +1,12 @@
-# Getting Started with Create React App
+# Chatroom Web Application
+This is a web application built with React, Redux, Material UI, and Socket.IO that allows users to browse, create, and interact with chatrooms.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), using the [Redux](https://redux.js.org/) and [Redux Toolkit](https://redux-toolkit.js.org/) TS template.
+## Features
+- Browse existing chatrooms
+- Create new chatrooms
+- Join existing chatrooms
+- Send messages in chatrooms
+- View list of currently connected users in chatroom
 
 ## Available Scripts
 
